@@ -4,6 +4,7 @@ import {
   wrapLanguageModel,
 } from 'ai';
 import { xai } from '@ai-sdk/xai';
+import { createXai } from '@ai-sdk/xai';
 import {
   artifactModel,
   chatModel,
@@ -12,6 +13,11 @@ import {
 } from './models.test';
 import { isTestEnvironment } from '../constants';
 
+const xai = createXai({
+  baseURL: process.env.OPENAI_BASE_URL,
+  apiKey : process.env.OPENAI_BASE_API_KEY,
+
+});
 export const myProvider = isTestEnvironment
   ? customProvider({
       languageModels: {
@@ -23,13 +29,13 @@ export const myProvider = isTestEnvironment
     })
   : customProvider({
       languageModels: {
-        'chat-model': xai('grok-2-vision-1212'),
+        'chat-model': xai(process.env.OPENAI_DEFAULT_MODEL),
         'chat-model-reasoning': wrapLanguageModel({
-          model: xai('grok-3-mini-beta'),
+          model: xai(process.env.OPENAI_REASONING_MODEL),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        'title-model': xai('grok-2-1212'),
-        'artifact-model': xai('grok-2-1212'),
+        'title-model': xai(process.env.OPENAI_TITLE_MODEL),
+        'artifact-model': xai(process.env.OPENAI_ARTIFACT_MODEL),
       },
       imageModels: {
         'small-model': xai.imageModel('grok-2-image'),
