@@ -3,7 +3,7 @@ import {
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
-import { createXai } from '@ai-sdk/xai';
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import {
   artifactModel,
   chatModel,
@@ -12,11 +12,13 @@ import {
 } from './models.test';
 import { isTestEnvironment } from '../constants';
 
-const xai = createXai({
+const provider = createOpenAICompatible({
+  name: 'gemini'
   baseURL: process.env.OPENAI_BASE_URL,
   apiKey : process.env.OPENAI_BASE_API_KEY,
-
+  includeUsage: true,
 });
+
 export const myProvider = isTestEnvironment
   ? customProvider({
       languageModels: {
@@ -28,15 +30,15 @@ export const myProvider = isTestEnvironment
     })
   : customProvider({
       languageModels: {
-        'chat-model': xai(process.env.OPENAI_DEFAULT_MODEL),
+        'chat-model': provider(process.env.OPENAI_DEFAULT_MODEL),
         'chat-model-reasoning': wrapLanguageModel({
-          model: xai(process.env.OPENAI_REASONING_MODEL),
+          model: provider(process.env.OPENAI_REASONING_MODEL),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        'title-model': xai(process.env.OPENAI_TITLE_MODEL),
-        'artifact-model': xai(process.env.OPENAI_ARTIFACT_MODEL),
+        'title-model': provider(process.env.OPENAI_TITLE_MODEL),
+        'artifact-model': provider(process.env.OPENAI_ARTIFACT_MODEL),
       },
       imageModels: {
-        'small-model': xai.imageModel('grok-2-image'),
+        'small-model': provider.imageModel('grok-2-image'),
       },
     });
