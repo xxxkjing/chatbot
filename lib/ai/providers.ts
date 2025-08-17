@@ -13,7 +13,7 @@ import {
 import { isTestEnvironment } from '../constants';
 
 const provider = createOpenAICompatible({
-  name: 'gemini'
+  name: 'gemini',
   baseURL: process.env.OPENAI_BASE_URL,
   apiKey : process.env.OPENAI_BASE_API_KEY,
   includeUsage: true,
