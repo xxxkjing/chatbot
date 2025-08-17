@@ -14,9 +14,8 @@ import { isTestEnvironment } from '../constants';
 
 const provider = createOpenAICompatible({
   name: 'gemini',
-  baseURL: process.env.OPENAI_BASE_URL,
+  baseURL: 'https://doi9.top/v1',
   apiKey : process.env.OPENAI_BASE_API_KEY,
-  includeUsage: true,
 });
 
 export const myProvider = isTestEnvironment
